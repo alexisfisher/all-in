@@ -6,7 +6,7 @@ class poker:
 	deck = []
 	discard = []
 	players = {} #id:hand
-
+	playerval = {} #name:handval
 	def __init__(self):
 		self.deck = ['H14','H2','H3','H4','H5','H6','H7','H8','H9','H10','H11','H12','H13','S14','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12','S13','D14','D2','D3','D4','D5','D6','D7','D8','D9','D10','D11','D12','D13','C14','C2','C3','C4','C5','C6','C7','C8','C9','C10','C11','C12','C13' ] #initialize
 		
@@ -53,23 +53,50 @@ class poker:
 		# return which player has the higher hand
 		for player in self.players:
 			print "player: {} hand: {} ".format(player, " ".join(self.players[player]))
-			if hand.isroyalflush(self.players[player]) != '00':
-				print "{} has a royal flush!".format(player)
-			if hand.isstraightflush(self.players[player]) != '00':
-				print "{} has a straight flush!".format(player)
-			if hand.isfourofakind(self.players[player]):
-				print "{} has four of a kind!".format(player)
-			if hand.isfullhouse(self.players[player]):
-				print "{} has a full house!".format(player)
-			if hand.isflush(self.players[player]) != '0':
-				print "{} has a flush!".format(player)
-			if hand.isstraight(self.players[player]):
-				print "{} has a straight!".format(player)
-			if hand.isthreeofakind(self.players[player]):
-				print "{} has a three of a kind!".format(player)
-			if hand.istwopair(self.players[player]):
-				print "{} has two pairs!".format(player)
+			self.playerval[player] = (0, hand.highcard(self.players[player]))
 			if hand.ispair(self.players[player]):
+				self.playerval[player] = (1, hand.ispair(self.players[player]))
 				print "{} has a pair!".format(player)
+			if hand.istwopair(self.players[player]):
+				self.playerval[player] = (2, hand.istwopair(self.players[player]))
+				print "{} has two pairs!".format(player)
+			if hand.isthreeofakind(self.players[player]):
+				self.playerval[player] = (3, hand.isthreeofakind(self.players[player]))
+				print "{} has a three of a kind!".format(player)
+			if hand.isstraight(self.players[player]):
+				self.playerval[player] = (4, hand.isstraight(self.players[player]))
+				print "{} has a straight!".format(player)
+			if hand.isflush(self.players[player]) != '0':
+				self.playerval[player] = (5, hand.isflush(self.players[player]))
+				print "{} has a flush!".format(player)
+			if hand.isfullhouse(self.players[player]):
+				self.playerval[player] = (6, hand.isfullhouse(self.players[player]))
+				print "{} has a full house!".format(player)
+			if hand.isfourofakind(self.players[player]):
+				self.playerval[player] = (7, hand.isfourofakind(self.players[player]))
+				print "{} has four of a kind!".format(player)
+			if hand.isstraightflush(self.players[player]) != '00':
+				self.playerval[player] = (8, hand.isstraightflush(self.players[player]))
+				print "{} has a straight flush!".format(player)
+			if hand.isroyalflush(self.players[player]) != '00':
+				self.playerval[player] = (9, hand.isroyalflush(self.players[player]))
+				print "{} has a royal flush!".format(player)
+		print "playerval: {}".format(self.playerval)
+		maxplayer = ''
+		maxplayers = []
+		maxval = 0
+		for player in self.playerval:
+			if self.playerval[player][0] > maxval:
+				maxplayer = player
+				maxval = self.playerval[player][0]
 
+		for player in self.playerval:
+			if self.playerval[player][0] == maxval:
+				maxplayers.append(player)
+
+		if len(maxplayers) > 1:
+			print "Winner tie: {} with {}".format(" ".join(maxplayers), maxval)
+		else:
+			print "Winner: {} with {}".format(maxplayer, self.playerval[maxplayer])
+		#need to see if there's a tie	
 		#return random.choice(self.players.keys())

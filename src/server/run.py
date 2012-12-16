@@ -16,8 +16,8 @@ if __name__ == "__main__":
 	print "swapping last two cards."
 	hand1= deck.swap(player1,[hand1.pop(), hand1.pop()])
 	hand2= deck.swap(player2,[hand2.pop(), hand2.pop()])
-	print "hand1:{}".format(" ".join(hand1))
-	print "hand2:{}".format(" ".join(hand2))
+	print "\thand1:{}".format(" ".join(hand1))
+	print "\thand2:{}".format(" ".join(hand2))
 	
 	deck.resolve()
 	print deck.deck
