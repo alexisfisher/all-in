@@ -95,8 +95,20 @@ class poker:
 				maxplayers.append(player)
 
 		if len(maxplayers) > 1:
-			print "Winner tie: {} with {}".format(" ".join(maxplayers), maxval)
+			#TODO resolve tie: look at which val is higher
+			tiemaxp = ''
+			tiemaxv = 0
+			for player in maxplayers:
+				if int(str(self.playerval[player][1]).lstrip('HSDC')) > tiemaxv:
+					tiemaxv = int(str(self.playerval[player][1]).lstrip('HSDC')) 
+					tiemaxp = player
+			print "Winner: {} with {}".format(tiemaxp, self.playerval[tiemaxp][1])	
+			#print "Winner tie: {} with {}".format(" & ".join(maxplayers), handlookup(maxval))
 		else:
-			print "Winner: {} with {}".format(maxplayer, self.playerval[maxplayer])
+			#print "Winner: {} with {}".format(maxplayer, self.playerval[maxplayer])
+			print "Winner: {} with {}".format(maxplayer, handlookup(maxval))
 		#need to see if there's a tie	
 		#return random.choice(self.players.keys())
+def handlookup(val):
+	vals = ['high card', 'pair', 'two pair', 'three of a kind', 'straight', 'flush', 'full house', 'four of a kind', 'straight flush', 'royal flush']
+	return vals[val]

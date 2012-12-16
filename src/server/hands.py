@@ -34,7 +34,7 @@ def isfullhouse(cards):
 	# should be isthreeofakind & ispair
 	# return val of threeofakind
 	three= isthreeofakind(cards)
-	subcards = [x for x in cards if cardval(x) == three]
+	subcards = [x for x in cards if cardval(x) != three]
 	if len(subcards):
 		if ispair(subcards):
 			return three
