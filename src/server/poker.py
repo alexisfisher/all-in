@@ -52,9 +52,9 @@ class poker:
 	def resolve(self):
 		# return which player has the higher hand
 		for player in self.players:
-			print "player: {} hand: {} ".format(player, " ".join(self.players[player]))
+			print "{}: {} ".format(player, " ".join(self.players[player]))
 			self.playerval[player] = hand.handval(self.players[player])
-		print "playerval: {}".format(self.playerval)
+		#print "playerval: {}".format(self.playerval)
 		maxplayer = ''
 		maxplayers = []
 		maxval = 0
