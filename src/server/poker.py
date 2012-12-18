@@ -76,10 +76,12 @@ class poker:
 					tiemaxv = int(str(self.playerval[player][1]).lstrip('HSDC')) 
 					tiemaxp = player
 			print "Winner: {} with {}".format(tiemaxp, self.playerval[tiemaxp][1])	
+			return tiemaxp
 			#print "Winner tie: {} with {}".format(" & ".join(maxplayers), handlookup(maxval))
 		else:
 			#print "Winner: {} with {}".format(maxplayer, self.playerval[maxplayer])
 			print "Winner: {} with {}".format(maxplayer, handlookup(maxval))
+			return maxplayer
 		#need to see if there's a tie	
 		#return random.choice(self.players.keys())
 def handlookup(val):
