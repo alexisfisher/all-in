@@ -53,34 +53,7 @@ class poker:
 		# return which player has the higher hand
 		for player in self.players:
 			print "player: {} hand: {} ".format(player, " ".join(self.players[player]))
-			self.playerval[player] = (0, hand.highcard(self.players[player]))
-			if hand.ispair(self.players[player]):
-				self.playerval[player] = (1, hand.ispair(self.players[player]))
-				print "{} has a pair!".format(player)
-			if hand.istwopair(self.players[player]):
-				self.playerval[player] = (2, hand.istwopair(self.players[player]))
-				print "{} has two pairs!".format(player)
-			if hand.isthreeofakind(self.players[player]):
-				self.playerval[player] = (3, hand.isthreeofakind(self.players[player]))
-				print "{} has a three of a kind!".format(player)
-			if hand.isstraight(self.players[player]):
-				self.playerval[player] = (4, hand.isstraight(self.players[player]))
-				print "{} has a straight!".format(player)
-			if hand.isflush(self.players[player]) != '0':
-				self.playerval[player] = (5, hand.isflush(self.players[player]))
-				print "{} has a flush!".format(player)
-			if hand.isfullhouse(self.players[player]):
-				self.playerval[player] = (6, hand.isfullhouse(self.players[player]))
-				print "{} has a full house!".format(player)
-			if hand.isfourofakind(self.players[player]):
-				self.playerval[player] = (7, hand.isfourofakind(self.players[player]))
-				print "{} has four of a kind!".format(player)
-			if hand.isstraightflush(self.players[player]) != '00':
-				self.playerval[player] = (8, hand.isstraightflush(self.players[player]))
-				print "{} has a straight flush!".format(player)
-			if hand.isroyalflush(self.players[player]) != '00':
-				self.playerval[player] = (9, hand.isroyalflush(self.players[player]))
-				print "{} has a royal flush!".format(player)
+			self.playerval[player] = hand.handval(self.players[player])
 		print "playerval: {}".format(self.playerval)
 		maxplayer = ''
 		maxplayers = []

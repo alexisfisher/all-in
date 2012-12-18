@@ -60,22 +60,24 @@ def isstraight(cards):
 	cardvals = []
 	for card in cards:
 		cardvals.append(cardval(card))
-	cardvals = sorted(cardvals)
-	#print cardvals
-	curr = cardvals[0]
-	for val in cardvals[1:]:
-		#print "val:{},curr:{}".format(val,curr)
-		if val == curr + 1:
-			curr = val
-	#print "highcard(cards):{}".format(highcard(cards))
-	if curr == cardval(highcard(cards)):
-		hcard = curr
-	#now we check if cardval(highcard(cards)) == 14. if so, and if hcard == 0,
-	if hcard == 0:
-		if cardval(highcard(cards)) == 14:
-			#now we check to see if cardvals[:4] is a straight w/a high val of 4
-			if isstraight(cards[:4]) == 5: #A2345
-				hcard = 5
+	cardvals = sorted(list(set(cardvals)))
+	if len(cardvals) == len(cards):
+		#print "cardvals:{}".format(cardvals)
+		curr = cardvals[0]
+		for val in cardvals[1:]:
+			if val == curr + 1:
+				curr = val
+		if curr == cardval(highcard(cards)):
+			hcard = curr
+		#now we check if cardval(highcard(cards)) == 14. if so, and if hcard == 0,
+		if hcard == 0:
+			#print "not a straight, checking if acey"
+			if cardval(highcard(cards)) == 14:
+				#print "we have an ace. cards[:4]:{}".format(cards[:4])
+				subcards = [x for x in cards if cardval(x) != 14]
+				#now we check to see if cardvals[:4] is a straight w/a high val of 4
+				if (len(subcards) == 4) and (isstraight(subcards) == 5): 
+					hcard = 5
 	return hcard
 		
 def isthreeofakind(cards):
@@ -133,3 +135,27 @@ def cardval(card):
 	val = int(card.lstrip('HSDC'))
 	#print "in cardval, card: {} val: {}".format(card,val)
 	return val 
+
+def handval(cards):
+	#playerval = 0
+	playerval = (0, highcard(cards))
+	if ispair(cards):
+		playerval = (1, ispair(cards))
+	if istwopair(cards):
+		playerval = (2, istwopair(cards))
+	if isthreeofakind(cards):
+		playerval = (3, isthreeofakind(cards))
+	if isstraight(cards):
+		playerval = (4, isstraight(cards))
+	if isflush(cards) != '0':
+		playerval = (5, isflush(cards))
+	if isfullhouse(cards):
+		playerval = (6, isfullhouse(cards))
+	if isfourofakind(cards):
+		playerval = (7, isfourofakind(cards))
+	if isstraightflush(cards) != '00':
+		playerval = (8, isstraightflush(cards))
+	if isroyalflush(cards) != '00':
+		playerval = (9, isroyalflush(cards))
+
+	return playerval
