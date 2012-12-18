@@ -54,18 +54,28 @@ def isflush(cards):
 
 def isstraight(cards):
 	#in order
-	#returns 0 or high card
+	# returns 0 or high card
+	#print cards
 	hcard = 0
 	cardvals = []
 	for card in cards:
 		cardvals.append(cardval(card))
 	cardvals = sorted(cardvals)
+	#print cardvals
 	curr = cardvals[0]
-	for val in cardvals[:1]:
+	for val in cardvals[1:]:
+		#print "val:{},curr:{}".format(val,curr)
 		if val == curr + 1:
 			curr = val
-	if curr == highcard(cards):
+	#print "highcard(cards):{}".format(highcard(cards))
+	if curr == cardval(highcard(cards)):
 		hcard = curr
+	#now we check if cardval(highcard(cards)) == 14. if so, and if hcard == 0,
+	if hcard == 0:
+		if cardval(highcard(cards)) == 14:
+			#now we check to see if cardvals[:4] is a straight w/a high val of 4
+			if isstraight(cards[:4]) == 5: #A2345
+				hcard = 5
 	return hcard
 		
 def isthreeofakind(cards):
