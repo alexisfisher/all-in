@@ -13,11 +13,14 @@ def isstraightflush(cards):
 	#return high card or '00'
 	f = isflush(cards)
 	s = isstraight(cards)
+	#print"f:{} s:{}".format(f,s)
 	if f == '0':
 		return '00'
 	else: 
 		if s:
 			return f+str(s)
+		else:
+			return '00'
 
 def isfourofakind(cards):
 	#four of the cards are the same val
