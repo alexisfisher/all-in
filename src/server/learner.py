@@ -19,10 +19,12 @@ import hands
 class learner:
 	hand = []
 	learnerid = 'learner'	
-	store = 'learner.txt'
+	store = '{}.txt'.format(learnerid)
 	learnedvals = {}
-	def __init__(self,inhand):
+	def __init__(self,inhand,learnerid):
 		self.hand = inhand
+		self.learnerid = learnerid
+		self.store = "{}.txt".format(learnerid)
 		self.sorthand()
 		self.initcounts()
 
