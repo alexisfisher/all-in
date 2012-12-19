@@ -57,33 +57,34 @@ Intro approach evaluation discussion conclusion
 \end{abstract}
 \section{Introduction}
 %Introduction: what you attempted to do, and what the motivation is.
-Implement a 5-card draw poker player that outperforms a random player. Initial implementation assumes two players. The players consist of the learned player and another player. The other player can be either random, a person, or another learned player. 
+\emph{All In} implements a 5-card draw poker player. The primary goal of the \emph{All In} player is to outperform a random player. Initial implementation assumes two players. The players consist of the learned player and another player. The other player can be either random, a person, or another learned player. 
 
 \section{Approach}
-Nondeterministic \emph{Q} learning, with a value function determined by the hand's rank and past performance (Wins or Losses seen).
-Because results of a given hand are nondeterministic, exploration happens organically. 
-Win/Loss probability uses Laplace smoothing to account for values the learner has not yet encountered.
 \begin{table*}[ht]
 \centering
-	\begin{tabular}{| l | l | c |}
+	\begin{tabular}{| r | r | l |}
 \hline
 \textbf{Value} & \textbf{Name} & \textbf{Description} \\
 \hline
 0 & high card & No other match \\
-1 & one pair & Single pair of a value\\
+1 & one pair & Single pair of a single value\\
 2 & two pairs & Two pairs of distinct values\\
-3 & three of a kind & Three of a value\\
-4 & straight & Sequential numbered cards\\
-5 & flush & All cards of a suit\\
+3 & three of a kind & Three cards of a single value\\
+4 & straight & Sequentially numbered cards\\
+5 & flush & All cards of a single suit\\
 6 & full house & Distinct three of a kind and pair\\
-7 & four of a kind & Four of a value\\
+7 & four of a kind & Four cards of a single value\\
 8 & straight flush & Sequential numbered cards of a single suit\\
 9 & royal flush & Straight flush with an Ace as high card\\
 \hline
 \end{tabular}
-\label{tab:cardvalues}
 \caption{Description of Values according to hand}
+\label{tab:cardvalues}
 \end{table*}
+
+Nondeterministic \emph{Q} reinforcement learning, with a value function determined by the hand's rank and past performance (Wins or Losses). This value is described in Table \ref{tab:cardvalues}. 
+Because results of a given hand are nondeterministic, exploration happens organically. 
+Win/Loss probability uses Laplace smoothing to account for values the learner has not yet encountered.
 %Approach: what you did. If you developed your own approach, you should describe your work in sufficient detail that someone else could replicate your work. If you are using previously developed algorithms, describe them briefly, and provide references to complete descriptions. Don't describe your code organization or implementation details. For the intended audience, you should assume that interested readers could figure out how to implement the code as long as the algorithm is described in sufficient detail.
 
 %To create a 5-card draw poker player implemented via a reinforcement-learning approach.  The constructed Player will retain memory of its initial and current hand to decide which cards to forfeit during the draw. To learn the Q algorithm, the reward signal is the ranking of the player's current poker hand, and the actions available are drawing [0-3] cards. I plan to implement this in Python.
@@ -95,7 +96,44 @@ Win/Loss probability uses Laplace smoothing to account for values the learner ha
 %The UCI poker hands data set~\cite{pokerdata} will be used. This data set includes ranked ``Poker Hand'' information, which will assist in determining the reward signal. 
 %TODO charts
 \subsection{Random Players}
-Two random-acting players were initially pitted against each other to gather baseline accuracy information and to provide initial win frequencies to our learner.
+Two random-acting players were initially pitted against each other to gather baseline accuracy information and to provide initial win frequencies to our learner. Table \ref{tab:rand_res} shows the win counts of each random player. Table \ref{tab:rand_val_res} shows a breakdown of the observed behavior for a single learner. These tables show the range of observed behaviors.
+\begin{table}[hb]
+\centering
+\begin{tabular}{| l | c | c |}
+	\hline
+& \textbf{Random 1} & \textbf{Random 2}\\
+\hline
+Wins & 18963 & 21461\\ %Total: 40424
+	\hline
+Win Percentage & 47\% &53\% \\
+\hline
+\end{tabular}
+\caption{Game Results with Random Players}
+\label{tab:rand_res}
+\end{table}
+
+%Value Win count  Loss count Win %
+\begin{table*}[hb]
+\centering
+\begin{tabular}{| l | r | l | r | l |}
+	\hline
+ \textbf{Value} & \textbf{Wins}& \textbf{Losses}& \textbf{Total}& \textbf{Win \%}\\
+\hline
+0& 8823& 11484& 20307& 43.4487173174\\
+1& 10400& 6708& 17108& 60.7890122735\\
+2& 1424& 498& 1922& 74.0644490644\\
+3& 647& 168& 815& 79.3145654835\\
+4& 87& 72& 159& 54.6583850932\\
+5& 46& 28& 74& 61.8421052632\\
+6& 27& 3& 30& 87.5\\
+7& 7& 2& 9& 72.7272727273\\
+8& 0& 0& 0& 50.0\\
+9& 0& 0& 0& 50.0\\
+\hline
+\end{tabular}
+\caption{Game Results with Random Players by Value}
+\label{tab:rand_val_res}
+\end{table*}
 
 \subsection{Learner vs. Random Player}
 We pitted the learner against a random player to ascertain performance improvement in our learner over random actions.
@@ -107,11 +145,29 @@ We pitted our learner against another instance of our learner, each with identic
 
 \section{Discussion}
 %Discussion: discuss your results. What are the lessons of your experiments? What are the limitations of your approach? What would you suggest for future work in this direction?
-Limitations:   value function currently only takes hand rank into account, not card value within rank: a hand of ``2 of Clubs, 3 of Hearts, 7 of Diamonds, Jack of Spades, Ace of Hearts'' is equivalent to ``2 of Hearts, 3 of Hearts, 7 of Diamonds, 8 of Spades, Jack of Hearts'' -- both are currently valued as ``highcard'' hands, with no extra weight given to the ace-high hand. 
+Results show
 
-Future work: incorporate hands seen. Betting.
+Lessons include
+
+Limitations:   The value function currently only takes hand rank into account, not card value within rank. A hand of ``2 of Clubs, 3 of Hearts, 7 of Diamonds, Jack of Spades, Ace of Hearts'' is equivalent to ``2 of Hearts, 3 of Hearts, 7 of Diamonds, 8 of Spades, Jack of Hearts'' -- both are currently valued as ``high card'' hands, with no extra weight given to the ace-high hand. 
+If these hands are played against each other, the ace-high hand will win and the jack-high hand will lose, but our learner does not take into account actual hand values seen in its predictive function.
+
+Future work includes incorporating wagers into \emph{All In}.  
+Accounting for wagers is a much richer environment, and was outside the scope of this project.  This would incorporate folding after the initial wager and deal, as well as tracking funds over a series of hands.
+%TODO incorporate hands seen. 
 
 \section{Related Work}
+There are many discussions of reinforcement learning and games, especially poker and its variants.
+There does not seem to be any work on this particular variant of poker, five card draw.  
+
+Erev et al.\ explore a variety of games, and show that their reinforcement model outperforms equilibrium predictions\cite{Erev98}.  
+
+Dahl applies a reinforcement learning algorithm to two-layer Texas Hold'em Poker \cite{Dahl01}. 
+This differs from our use of five card draw as a game, and changes the amount of information available about the other agent's status. 
+
+Sweeney et al.\ explores the use of reinforcement learning to Texas Hold'em Poker\cite{Sweeney}.
+This again differs from our use of five card draw as the game of choice.  
+Wagering information and past actions of the opponent are taken into consideration in the described learning model.
 
 \section{Conclusion}
 
@@ -125,14 +181,24 @@ K.B. Korb, A.E. Nicholson and N. Jitnah,
 In Proc. of Uncertainty in Artificial Intelligence, pp. 343-350, 
 Stockholm, Sweden, August, 1999.
 
-\bibitem{pokerdata}
-\emph{Poker Hand Data Set}
-http://archive.ics.uci.edu/ml/datasets/Poker+Hand
+%\bibitem{pokerdata}
+%\emph{Poker Hand Data Set}
+%http://archive.ics.uci.edu/ml/datasets/Poker+Hand
 
 \bibitem{Sweeney}
-%TODO
+Neill Sweeney, David Sinclair,
 	\emph{Applying Reinforcement Learning to Poker}.
-In 
+At Computer Poker Symposium, July, 2012.
+
+\bibitem{Erev98}
+Ido Erev and  Alvin E Roth, 
+\emph{Predicting How People Play Games: Reinforcement Learning in Experimental Games with Unique, Mixed Strategy Equilibria}.
+In American Economic Review, American Economic Association, vol. 88(4), pages 848-81, September, 1998.
+
+\bibitem{Dahl01}
+Fredrik A. Dahl, 
+\emph{A Reinforcement Learning Algorithm Applied to Simplified Two-Player Texas Hold'em Poker}. 
+In Proceedings of the 12th European Conference on Machine Learning (EMCL '01), Luc De Raedt and Peter A. Flach (Eds.). Springer-Verlag, London, UK, UK, 85-96, 2001.
 \end{thebibliography}
 
 
