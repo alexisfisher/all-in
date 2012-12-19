@@ -4,36 +4,28 @@
 %  Created by Alexis on 2012-11-04.
 %  Copyright (c) 2012 . All rights reserved.
 %
-\documentclass[]{article}
-
+%\documentclass[]{article}
+\documentclass[12pt,pdftex,twocolumn]{article}
 % Use utf-8 encoding for foreign characters
 \usepackage[utf8]{inputenc}
-
 % Setup for fullpage use
 \usepackage{fullpage}
-
 % Uncomment some of the following if you use the features
 %
 % Running Headers and footers
 %\usepackage{fancyhdr}
-
 % Multipart figures
 %\usepackage{subfigure}
-
 % More symbols
 %\usepackage{amsmath}
 %\usepackage{amssymb}
 %\usepackage{latexsym}
-
 % Surround parts of graphics with box
 \usepackage{boxedminipage}
-
 % Package for including code in the document
 \usepackage{listings}
-
 % If you want to generate a toc for each chapter (use with book)
-\usepackage{minitoc}
-
+%\usepackage{minitoc}
 % This is now the recommended way for checking for PDFLaTeX:
 \usepackage{ifpdf}
 
@@ -52,38 +44,73 @@
 \fi
 \title{CS760 \\ All In \\ Project Report }
 \author{  Alexis Fisher }
-
 %\date{2012-11-04}
-
 \begin{document}
-
 \ifpdf
 \DeclareGraphicsExtensions{.pdf, .jpg, .tif}
 \else
 \DeclareGraphicsExtensions{.eps, .jpg}
 \fi
-
 \maketitle
-
-
-%\begin{abstract}
-%\end{abstract}
+\begin{abstract}
+Intro approach evaluation discussion conclusion
+\end{abstract}
 \section{Introduction}
 %Introduction: what you attempted to do, and what the motivation is.
+Implement a 5-card draw poker player that outperforms a random player. Initial implementation assumes two players. The players consist of the learned player and another player. The other player can be either random, a person, or another learned player. 
 
 \section{Approach}
+Nondeterministic \emph{Q} learning, with a value function determined by the hand's rank and past performance (Wins or Losses seen).
+Because results of a given hand are nondeterministic, exploration happens organically. 
+Win/Loss probability uses Laplace smoothing to account for values the learner has not yet encountered.
+\begin{table*}[ht]
+\centering
+	\begin{tabular}{| l | l | c |}
+\hline
+\textbf{Value} & \textbf{Name} & \textbf{Description} \\
+\hline
+0 & high card & No other match \\
+1 & one pair & Single pair of a value\\
+2 & two pairs & Two pairs of distinct values\\
+3 & three of a kind & Three of a value\\
+4 & straight & Sequential numbered cards\\
+5 & flush & All cards of a suit\\
+6 & full house & Distinct three of a kind and pair\\
+7 & four of a kind & Four of a value\\
+8 & straight flush & Sequential numbered cards of a single suit\\
+9 & royal flush & Straight flush with an Ace as high card\\
+\hline
+\end{tabular}
+\label{tab:cardvalues}
+\caption{Description of Values according to hand}
+\end{table*}
 %Approach: what you did. If you developed your own approach, you should describe your work in sufficient detail that someone else could replicate your work. If you are using previously developed algorithms, describe them briefly, and provide references to complete descriptions. Don't describe your code organization or implementation details. For the intended audience, you should assume that interested readers could figure out how to implement the code as long as the algorithm is described in sufficient detail.
 
-%Implement a 5-card draw poker player that outperforms a random player. Initial implementation assumes two players (the learned player and another player, either random, a person, or another learned player). 
 %To create a 5-card draw poker player implemented via a reinforcement-learning approach.  The constructed Player will retain memory of its initial and current hand to decide which cards to forfeit during the draw. To learn the Q algorithm, the reward signal is the ranking of the player's current poker hand, and the actions available are drawing [0-3] cards. I plan to implement this in Python.
 
 \section{Empirical Evaluation}
-%To gain an understanding and evidence of performance, I plan to measure performance against a random player and the Bayesian Poker Player from Monash University~\cite{korb99}. Performance is based on win/loss of a hand, averaged over thousands of hands.  
-%The UCI poker hands data set~\cite{pokerdata} will be used. This data set includes ranked ``Poker Hand'' information, which will assist in determining the reward signal. 
 
 %Empirical Evaluation: describe your experiments and results. Describe your data sets in adequate detail. If you selected a subset of a larger data set, how did you make this selection? Describe how you chose settings for parameters of the algorithms? Clearly state what are you trying to test/demonstrate in your experiments. Your experiments should be motivated by one or more explicitly stated hypotheses or questions.
+%To gain an understanding and evidence of performance, I plan to measure performance against a random player and the Bayesian Poker Player from Monash University~\cite{korb99}. Performance is based on win/loss of a hand, averaged over thousands of hands.  
+%The UCI poker hands data set~\cite{pokerdata} will be used. This data set includes ranked ``Poker Hand'' information, which will assist in determining the reward signal. 
+%TODO charts
+\subsection{Random Players}
+Two random-acting players were initially pitted against each other to gather baseline accuracy information and to provide initial win frequencies to our learner.
+
+\subsection{Learner vs. Random Player}
+We pitted the learner against a random player to ascertain performance improvement in our learner over random actions.
+
+\subsection{Learner vs. Learner with background}
+We pitted our learner against another instance of our learner, each with identical background information.
+
+\subsection{Learner vs. Learner without background}
+
 \section{Discussion}
 %Discussion: discuss your results. What are the lessons of your experiments? What are the limitations of your approach? What would you suggest for future work in this direction?
+Limitations:   value function currently only takes hand rank into account, not card value within rank: a hand of ``2 of Clubs, 3 of Hearts, 7 of Diamonds, Jack of Spades, Ace of Hearts'' is equivalent to ``2 of Hearts, 3 of Hearts, 7 of Diamonds, 8 of Spades, Jack of Hearts'' -- both are currently valued as ``highcard'' hands, with no extra weight given to the ace-high hand. 
+
+Future work: incorporate hands seen. Betting.
+
 \section{Related Work}
 
 \section{Conclusion}
@@ -101,5 +128,12 @@ Stockholm, Sweden, August, 1999.
 \bibitem{pokerdata}
 \emph{Poker Hand Data Set}
 http://archive.ics.uci.edu/ml/datasets/Poker+Hand
+
+\bibitem{Sweeney}
+%TODO
+	\emph{Applying Reinforcement Learning to Poker}.
+In 
 \end{thebibliography}
+
+
 \end{document}
