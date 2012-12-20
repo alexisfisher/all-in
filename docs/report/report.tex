@@ -251,13 +251,24 @@ As expected, both instances of the learner, although they each have distinct inf
 
 %%%%%%
 %TODO
-%\subsection{Learner with background vs. Learner without background}
-%The learner with background information of only learner's performance (omitting the information from plays of only random players) played against another instance of the learner with no background information.
+\subsection{Learner with background vs. Learner without background}
+The learner with background information of only learner's performance (omitting the information from plays of only random players) played against another instance of the learner with no background information. 
+Figure \ref{fig:learn_hist_v_learn} shows the results. 
+Surprisingly, the learner with historic knowledge does not outperform the learner with no history.
+
+\begin{figure}[ht!]
+	\begin{center}
+		\includegraphics[scale=0.5]{figs/learner_histvlearner.png}
+		\caption{Wins of Learner with Historic Data vs. Learner without Historic Data}
+		\label{fig:learn_hist_v_learn}
+\end{center}
+\end{figure}
 
 \section{Discussion} \label{sec:disc}
 \subsection{Results}
 Results show the learner performs better than the random actor. 
 When the learner plays against itself, each instance of the learner appears to win about 50\% of the time.
+If a learner plays against an instance of itself with less knowledge, the learner with less knowledge seems to perform better for at least a limited number of game runs, although this appears to even out after approximately 50 games.
 
 \subsection{Limitations}
 \label{subsec:limit}
@@ -297,7 +308,7 @@ The players consist of the learned player and another player.
 The other player can be either a random actor, a person, or another learned player. 
 The reinforcement \emph{All In} learner is shown to perform better than a random player.
 A selection of related works are also presented.
-%Source code is available at
+Source code is available at \\ \texttt{https://github.com/alexisfisher/all-in}
 
 \bibliographystyle{plain}
 
