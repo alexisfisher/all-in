@@ -43,9 +43,14 @@ The implemented learner performs better than the random player, winning more tha
 \end{abstract}
 \section{Introduction}
 %Introduction: what you attempted to do, and what the motivation is.
-\emph{All In} implements a 5-card draw poker player. The primary goal of the \emph{All In} player is to outperform a random player. Initial implementation assumes two players. The players consist of the learned player and another player. The other player can be either random, a person, or another learned player. 
+\emph{All In} implements a 5-card draw poker player. 
+The primary goal of the \emph{All In} player is to outperform a random player. 
+Initial implementation assumes two players. 
+The players consist of the learned player and another player. 
+The other player can be either a random actor, a person, or another learned player. 
+This paper discusses the approach taken in Section \ref{sec:approach}, presents experimental results in Section \ref{sec:eval}, Section \ref{sec:disc} discusses these experimental results, current limitations, and future work, Section \ref{sec:related} describes a selection of related work, and we conclude in Section \ref{sec:conclusion}.
 
-\section{Approach}
+\section{Approach} \label{sec:approach}
 \begin{table*}[ht]
 \centering
 	\begin{tabular}{| r | r | l |}
@@ -68,33 +73,28 @@ The implemented learner performs better than the random player, winning more tha
 \label{tab:cardvalues}
 \end{table*}
 
-\emph{All In} uses nondeterministic \emph{Q} reinforcement learning, with a value function determined by the hand's rank and past performance (Wins or Losses). This value is described in Table \ref{tab:cardvalues}. 
-Because results of a given hand are nondeterministic, exploration happens organically. 
-Win/Loss probability uses Laplace smoothing to account for values the learner has not yet encountered. This is pessimistic- if the learner achieves a royal flush, there is a much higher likelihood of winning than the 50\% indicated in Table \ref{tab:rand_val_res}. 
+\emph{All In} uses nondeterministic \emph{Q} reinforcement learning, with a value function determined by the hand's rank and past performance (Wins or Losses). This valuation is described in Table \ref{tab:cardvalues}. 
+Because results of a given hand and each given draw are nondeterministic, exploration happens organically. 
+Win/Loss probability uses Laplace smoothing to account for values the learner has not yet encountered. This valuation is pessimistic. 
+If the learner achieves a royal flush, there is a much higher likelihood of winning than the 50\% indicated in Table \ref{tab:rand_val_res}. 
 
-As the rules of poker vary wildly, a quick description of the rules is appropriate.
+As the rules of poker can vary widely, a quick description of the ruleset implemented is appropriate.
 Each player is dealt a hand of five cards from a standard 52 card deck. 
 Each player has the opportunity to discard up to three cards, and receive replacements from the deck.
-Poker hands as described in Table \ref{tab:cardvalues} are used to determine the winner.
-%Approach: what you did. If you developed your own approach, you should describe your work in sufficient detail that someone else could replicate your work. If you are using previously developed algorithms, describe them briefly, and provide references to complete descriptions. Don't describe your code organization or implementation details. For the intended audience, you should assume that interested readers could figure out how to implement the code as long as the algorithm is described in sufficient detail.
+Poker hands, as described in Table \ref{tab:cardvalues}, are used to determine the winner.
 
-%To create a 5-card draw poker player implemented via a reinforcement-learning approach.  The constructed Player will retain memory of its initial and current hand to decide which cards to forfeit during the draw. To learn the Q algorithm, the reward signal is the ranking of the player's current poker hand, and the actions available are drawing [0-3] cards. I plan to implement this in Python.
+\section{Evaluation} \label{sec:eval}
 
-\section{Evaluation}
-
-%Empirical Evaluation: describe your experiments and results. Describe your data sets in adequate detail. If you selected a subset of a larger data set, how did you make this selection? Describe how you chose settings for parameters of the algorithms? Clearly state what are you trying to test/demonstrate in your experiments. Your experiments should be motivated by one or more explicitly stated hypotheses or questions.
-%To gain an understanding and evidence of performance, I plan to measure performance against a random player and the Bayesian Poker Player from Monash University~\cite{korb99}. Performance is based on win/loss of a hand, averaged over thousands of hands.  
-%The UCI poker hands data set~\cite{pokerdata} will be used. This data set includes ranked ``Poker Hand'' information, which will assist in determining the reward signal. 
-%TODO charts
 \subsection{Random Players}
 Two random-acting players initially played against each other to gather baseline accuracy information and to provide initial win frequencies to our learner. 
 Table \ref{tab:rand_res} shows the win counts of each random player. 
 As anticipated, random players approach near-even wins and losses.
 Table \ref{tab:rand_val_res} shows a breakdown of the observed behavior for a single learner. 
-Values that were not seen in the 40,000 games have a win likelihood of 50\% due to the smoothing.
-These tables show the range of observed behaviors and expected outcomes after 40,000 games.
+Values that were not seen in the 40,000 games have a win likelihood of 50\% due to smoothing.
+These tables show the range of observed behaviors and expected outcomes after approximately 40,000 games.
+Figure \ref{fig:rand_v_rand} shows the performance of a single random player, playing against another random player, over a series of distinct games.  We expect this to oscillate around 50\% wins. 
 
-\begin{table}[hb]
+\begin{table}[h]
 \centering
 \begin{tabular}{| l | c | c |}
 	\hline
@@ -109,8 +109,15 @@ Win Percentage & 47\% &53\% \\
 \label{tab:rand_res}
 \end{table}
 
-%Value Win count  Loss count Win %
-\begin{table*}[hb!]
+\begin{figure}[hb!]
+	\begin{center}
+		\includegraphics[scale=0.5]{figs/randvrand.png}
+		\caption{Random Wins vs. Random}
+		\label{fig:rand_v_rand}
+\end{center}
+\end{figure}
+
+\begin{table*}[ht!]
 \centering
 \begin{tabular}{| l | r | l | r | l |}
 	\hline
@@ -131,16 +138,10 @@ Win Percentage & 47\% &53\% \\
 \caption{Expected Game Results with Random Players by Value}
 \label{tab:rand_val_res}
 \end{table*}
-\begin{figure}[ht!]
-	\begin{center}
-		\includegraphics[scale=0.5]{figs/randvrand.png}
-		\caption{Random Wins vs. Random}
-		\label{fig:rand_v_rand}
-\end{center}
-\end{figure}
+
 %%%%%%%%%
 \subsection{Learner vs. Random Player}
-\begin{table*}[hb!]
+\begin{table*}[h]
 \centering
 \begin{tabular}{| l | r | l | r | l |}
 	\hline
@@ -161,7 +162,7 @@ Win Percentage & 47\% &53\% \\
 \caption{Expected Game Results, Learner vs. Random Player from Learner's Perspective}
 \label{tab:learner_v_rand}
 \end{table*}
-\begin{figure}[ht!]
+\begin{figure}[h]
 	\begin{center}
 		\includegraphics[scale=0.5]{figs/learnervrand.png}
 		\caption{Learner Wins vs. Random}
@@ -169,14 +170,19 @@ Win Percentage & 47\% &53\% \\
 \end{center}
 \end{figure}
 
-We pitted the learner against a random player to ascertain performance improvement in our learner over random actions. 
-This performance improvement is evident in Table \ref{tab:learner_v_rand}. The learner, primed with the results from the random players, won 63\% of the time.  %TODO 
+The learner played against a random player to ascertain performance improvement in our learner over random actions. 
+This performance improvement is evident in Table \ref{tab:learner_v_rand}. 
+The learner, primed with the results from the random players, won 63\% of the time.  
+The learner's win after different amounts of iterations is demonstrated in Figure \ref{fig:learner_v_rand}.
+Figure \ref{fig:learner_v_rand} shows performance improvement as more results are gathered and incorporated into the learner's model.
 
 %%%%%%%%%%%
 \subsection{Learner vs. Learner with background}
-We pitted our learner against another instance of our learner, each with identical background information.
+The learner also played against another instance of our learner, each with identical background information.
 This background information included the body of results from the random players, as well as the body of results from the learner versus the random player. 
 The winning percentages over a range of iterations is shown in Figure \ref{fig:learn_v_learn}.
+These are approximately even, as expected. 
+
 \begin{table*}[hb!]
 \centering
 \begin{tabular}{| l | r | l | r | l |}
@@ -231,42 +237,70 @@ The winning percentages over a range of iterations is shown in Figure \ref{fig:l
 
 %%%%%%%%%%%
 \subsection{Learner vs. Learner without background}
+The learner, starting with no background information, played another instance of the learner with no background information.
+Figure \ref{fig:learn_v_learn_hist} shows the win ratio after a range of game iterations.
+As expected, both instances of the learner, although they each have distinct information, oscillate around 50\% win ratios.
 
-\subsection{Learner with background vs. Learner without background}
-\section{Discussion}
-%Discussion: discuss your results. What are the lessons of your experiments? What are the limitations of your approach? What would you suggest for future work in this direction?
+\begin{figure}[ht!]
+	\begin{center}
+		\includegraphics[scale=0.5]{figs/learnervlearner_hist.png}
+		\caption{Learner Wins vs. Learner}
+		\label{fig:learn_v_learn_hist}
+\end{center}
+\end{figure}
+
+%%%%%%
+%TODO
+%\subsection{Learner with background vs. Learner without background}
+%The learner with background information of only learner's performance (omitting the information from plays of only random players) played against another instance of the learner with no background information.
+
+\section{Discussion} \label{sec:disc}
 \subsection{Results}
-Results show
-%Lessons include
+Results show the learner performs better than the random actor. 
+When the learner plays against itself, each instance of the learner appears to win about 50\% of the time.
 
-\subsection{Limitations}   The value function currently only takes hand rank into account, not card value within rank. A hand of ``2 of Clubs, 3 of Hearts, 7 of Diamonds, Jack of Spades, Ace of Hearts'' is equivalent to ``2 of Hearts, 3 of Hearts, 7 of Diamonds, 8 of Spades, Jack of Hearts'' -- both are currently valued as ``high card'' hands, with no extra weight given to the ace-high hand. 
+\subsection{Limitations}
+\label{subsec:limit}
+The value function currently only takes hand rank into account, not card value within rank. A hand consisting of ``2 of Clubs, 3 of Hearts, 7 of Diamonds, Jack of Spades, Ace of Hearts'' is equivalent to a hand consisting of ``2 of Hearts, 3 of Hearts, 7 of Diamonds, 8 of Spades, Jack of Hearts'' -- both are currently valued as ``high card'' hands, with no extra weight given to the ace-high hand. 
 If these hands are played against each other, the ace-high hand will win and the jack-high hand will lose, but our learner does not take into account actual hand values seen in its predictive function.
 
 \subsection{Future Work}
-Future work includes incorporating wagers into \emph{All In}.  
+Future work could include incorporating wagers into \emph{All In}.  
 Accounting for wagers is a much richer environment, and was outside the scope of this project.  
-This would incorporate folding after the initial wager and deal, as well as tracking funds over a series of hands.
-%TODO incorporate hands seen. 
-% incorporate how many cards swapped -> wins
+This would also require the possibility folding after the initial wager and deal, as well as tracking funds over a series of hands.
 
-\section{Related Work}
+Incorporating specific hands, as described in Subsection \ref{subsec:limit}, could provide for further gains in performance.
+This does run the risk of requiring more smoothing, as the incorporated data would be sparser.
+This could be ameliorated by falling back to a simple value estimation if no hand estimation exists, or by weighting the smoothing applied by value (i.e., 90\% probability to win if the hand is a royal flush, 80\% probability to win if the hand is a straight flush, etc.).
+
+If the learner incorporated how many cards are chosen to swap with wins and losses, this may garner more insight into results.
+It's undetermined if there would be useful gains, but might be an interesting avenue to explore.
+
+\section{Related Work} \label{sec:related}
 There are many discussions of reinforcement learning and games, especially poker and its variants.
 There does not seem to be any work on this particular variant of poker, five card draw.  
 
-Erev et al.\ explore a variety of games, and show that their reinforcement model outperforms equilibrium predictions\cite{Erev98}.  
+Erev et al.\ explore a variety of games, and show that their reinforcement model outperforms equilibrium predictions \cite{Erev98}.  
 
 Dahl applies a reinforcement learning algorithm to two-layer Texas Hold'em Poker \cite{Dahl01}. 
 This differs from our use of five card draw as a game, and changes the amount of information available about the other agent's status. 
 
-Sweeney et al.\ explores the use of reinforcement learning to Texas Hold'em Poker\cite{Sweeney}.
+Sweeney et al.\ explores the use of reinforcement learning to Texas Hold'em Poker \cite{Sweeney}.
 This again differs from our use of five card draw as the game of choice.  
 Wagering information and past actions of the opponent are taken into consideration in the described learning model.
 
-\section{Conclusion}
-
+\section{Conclusion} \label{sec:conclusion}
+\emph{All In} implements a 5-card draw poker player. 
+The primary goal of the \emph{All In} player is to outperform a random player. 
+%Initial implementation assumes two players. 
+The players consist of the learned player and another player. 
+The other player can be either a random actor, a person, or another learned player. 
+The reinforcement \emph{All In} learner is shown to perform better than a random player.
+A selection of related works are also presented.
+%Source code is available at
 
 \bibliographystyle{plain}
-%\bibliography{}
+
 \begin{thebibliography}{9}
 \bibitem{korb99}
 K.B. Korb, A.E. Nicholson and N. Jitnah,
